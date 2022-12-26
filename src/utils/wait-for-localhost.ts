@@ -5,6 +5,7 @@
 //
 
 const http = require('http');
+const debug = require('debug')('jest-dynamodb');
 
 export default function waitForLocalhost(port: number, host: string): Promise<void> {
   return new Promise<void>(resolve => {
@@ -16,12 +17,12 @@ export default function waitForLocalhost(port: number, host: string): Promise<vo
           if (response.statusCode === 400) {
             return resolve();
           }
-
+          debug(response)
           retry();
         }
       );
 
-      request.on('error', retry);
+      request.on('error', (error) => {debug(error); retry();});
       request.end();
     };
     main();
